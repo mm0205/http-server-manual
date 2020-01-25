@@ -3,4 +3,6 @@ project(http_server)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(http_server main.cpp)
+add_subdirectory(simple-server-shared)
+add_subdirectory(simple-server-01)
+add_subdirectory(simple-server-02-cgi)
