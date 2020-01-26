@@ -9,6 +9,9 @@
 
 void http_request_t::add_bytes(const std::string &request_parts) {
 
+    if (request_parts.empty()) {
+        return;
+    }
     // ヘッダが ready でない場合は ヘッダの読み込み処理を行う
     if (!this->is_header_ready()) {
 
@@ -74,8 +77,9 @@ void http_request_t::try_parse_request() {
 }
 
 bool http_request_t::all_header_received() const {
-    return this->total_bytes.size() >= http_constants_t::CRLF2.size()
-           && this->total_bytes.find(http_constants_t::CRLF2) != std::string::npos;
+    const auto size_ok = this->total_bytes.size() >= http_constants_t::CRLF2.size();
+    const auto found = this->total_bytes.find(http_constants_t::CRLF2) != std::string::npos;
+    return size_ok && found;
 }
 
 
@@ -118,7 +122,7 @@ void http_request_t::parse_header_line(const std::string &header_line) {
     }
 
     const auto result = boost::find_first(header_line,
-        http_constants_t::HEADER_DELIMITER);
+                                          http_constants_t::HEADER_DELIMITER);
     if (!result) {
         throw std::runtime_error("ヘッダのデリミタ \":\" が含まれていません");
     }
